@@ -11,8 +11,9 @@ ELista *criar_elista(Registro *registro);
 Lista *criar_lista();
 
 void cadastrar(Lista *lista);
-void consulta_paciente(Lista lista);
+void consultar_paciente(Lista *lista);
 void mostrar_lista(Lista *lista);
+void atualizar_dados(Lista *lista);
 
 
 void clearBuffer();

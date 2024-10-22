@@ -8,35 +8,41 @@ int main(void) {
 	
     
     Lista *lista = criar_lista();
-
+    int op = 1;
     // menu
-    int op;
-    int op2;    
-    printf("1 - Cadastrar\n");
-    printf("2 - Atendimentos\n");
-    printf("3 - Pesquisa\n");
-    printf("4 - Desfazer\n");
-    printf("5 - Carregar/Salvar\n");
-    printf("6 - Sobre\n");
-
-    scanf("%d", &op);
-    clearBuffer();
-
     while(op != 0){
+        
+        int op2;    
+        printf("\n1 - Cadastrar\n");
+        printf("2 - Atendimentos\n");
+        printf("3 - Pesquisa\n");
+        printf("4 - Desfazer\n");
+        printf("5 - Carregar/Salvar\n");
+        printf("6 - Sobre\n");
+        printf("0 - Sair\n");
+
+        scanf("%d", &op);
+        clearBuffer();
         if (op == 1){
             printf("\n1 - Cadastrar novo paciente\n");
-            printf("2 - Consulta paciente cadastrado\n");
+            printf("2 - Consultar paciente cadastrado\n");
             printf("3 - Mostrar lista completa\n");
             printf("4 - Atualizar dados do paciente\n");
             printf("5 - Remover paciente\n"); 
-            printf("0 - Sair\n"); 
             scanf("%d", &op2); 
             clearBuffer();
+
             if (op2 == 1){
                 cadastrar(lista);
             }
+            else if (op2 == 2){
+                consultar_paciente(lista);
+            }
             else if (op2 == 3){
                 mostrar_lista(lista);
+            }
+            else if (op2 == 4){
+                atualizar_dados(lista);
             }
         }
 

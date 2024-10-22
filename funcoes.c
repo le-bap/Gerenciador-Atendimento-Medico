@@ -89,12 +89,84 @@ void mostrar_lista(Lista *lista){
 
 void consultar_paciente(Lista *lista){
     ELista *atual = lista->inicio;
-    char *procurado;
+    char procurado[20];
     printf("Digite o RG do paciente: ");
     scanf("%s", procurado);
 
-    while(atual != NULL && procurado != atual->dados->rg){
-        if ()
+    while(atual != NULL && strcmp(procurado, atual->dados->rg) != 0){
+        atual = atual->proximo;
+    }
+    // atual vai guardar as informações do paciente buscado
+    if (atual == NULL){
+        printf("Paciente nao encontrado");
+    }
+    else {
+        printf("\nNome: %s ", atual->dados->nome);
+        printf("\nIdade: %d ", atual->dados->idade);
+        printf("\nRG: %s ", atual->dados->rg);
+        printf("\nData de entrada: %d / %d / %d \n", atual->dados->entrada->dia, 
+        atual->dados->entrada->mes, atual->dados->entrada->ano);
+    }
+}
+
+void atualizar_dados(Lista *lista){
+    ELista *atual = lista->inicio;
+    char procurado[20];
+    printf("Digite o RG do paciente: ");
+    scanf("%s", procurado);
+
+    while(atual != NULL && strcmp(procurado, atual->dados->rg) != 0){
+        atual = atual->proximo;
+    }
+    // atual vai guardar as informações do paciente buscado
+    if (atual == NULL){
+        printf("\nPaciente nao encontrado");
+    }else{
+        int escolha;
+        printf("\nEscolha a inforamacao que gostaria de atualizar:");
+        printf("\n1 - Nome");
+        printf("\n2 - Idade");
+        printf("\n3 - RG");
+        printf("\n4 - Data de entrada\n");
+        scanf("%d", &escolha);
+        clearBuffer();
+        if (escolha == 1){
+            char nome2[50];
+            printf("Novo nome: ");
+            scanf("%s", nome2);
+            clearBuffer();
+            strcpy(atual->dados->nome, nome2);
+        } else if(escolha == 2){
+            int idade2;
+            printf("\nNova idade: ");
+            scanf("%d", &idade2);
+            clearBuffer();
+            atual->dados->idade = idade2;
+        } else if (escolha == 3){
+            char rg2[20];
+            printf("\nNovo RG: ");
+            scanf("%s", rg2);
+            clearBuffer();
+            strcpy(atual->dados->rg, rg2);
+        } else if (escolha == 4){
+            int dia2, mes2, ano2;
+            printf("Dia: ");
+            scanf("%d", &dia2);
+            clearBuffer();
+            printf("Mes: ");
+            scanf("%d", &mes2);
+            clearBuffer();
+            printf("Ano: ");
+            scanf("%d", &ano2);
+            clearBuffer();
+            atual->dados->entrada->dia = dia2;
+            atual->dados->entrada->mes = mes2;
+            atual->dados->entrada->ano = ano2;
+        }else{
+            printf("Numero invalido.");
+            return;
+        }
+        printf("Informacoes atualizadas com sucesso!\n");
     }
 }
 
