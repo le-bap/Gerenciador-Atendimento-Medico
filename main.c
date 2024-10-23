@@ -8,6 +8,7 @@ int main(void) {
 	
     
     Lista *lista = criar_lista();
+    Fila *fila = criar_fila();
     int op = 1;
     // menu
     while(op != 0){
@@ -43,6 +44,10 @@ int main(void) {
             }
             else if (op2 == 4){
                 atualizar_dados(lista);
+            }else if(op2 == 5){
+                remover_paciente(lista);
+            }else{
+                printf("Opção Inválida!");
             }
         }
 
@@ -52,6 +57,15 @@ int main(void) {
             printf("3 - Mostrar fila\n"); 
             scanf("%d", &op2);
             clearBuffer();  
+            if(op2 == 1){
+                enfileirar_paciente(fila, lista);
+            }else if(op2 == 2){
+                desenfileirar_paciente(fila);
+            }else if(op2 == 3){
+                mostrar_fila(fila);
+            }else{
+                printf("\nOpcao invalida!");
+            }
         }
 
         else if (op == 3){

@@ -29,11 +29,26 @@ ELista *criar_elista(Registro *registro){
     return elista;
 }
 
+Efila *criar_efila(Registro *registro){
+    Efila *efila = malloc(sizeof(Efila));
+    efila->dados = registro;
+    efila->proximo = NULL;
+    return efila;
+}
+
 Lista *criar_lista(){
     Lista *lista = malloc(sizeof(Lista));
     lista->inicio = NULL;
     lista->qtd = 0;
     return lista;
+}
+
+Fila *criar_fila(){
+  Fila *fila = malloc(sizeof(Fila));
+  fila->head = NULL;
+  fila->tail = NULL;
+  fila->qtd = 0;
+  return fila;
 }
 
 // cadastrar novo paciente
@@ -169,6 +184,138 @@ void atualizar_dados(Lista *lista){
         printf("Informacoes atualizadas com sucesso!\n");
     }
 }
+
+// funcao de remover paciente pelo RG
+void remover_paciente(Lista *lista){
+    if (lista->inicio == NULL) {
+        printf("A lista está vazia. Não há pacientes para remover.\n");
+        return;
+    }
+
+    char removido[20];
+    printf("Digite o RG do paciente: ");
+    scanf("%s", removido);
+
+    ELista *atual = lista->inicio;
+    ELista *anterior = NULL;
+
+    while (atual != NULL && strcmp(removido, atual->dados->rg) != 0) {
+        anterior = atual;  
+        atual = atual->proximo;
+    }
+
+    // Se nao houver pacientes com esse RG
+    if (atual == NULL) {
+        printf("Paciente não encontrado.\n");
+        return;
+    }
+
+    // Caso o paciente esteja no início da lista
+    if (atual == lista->inicio) {
+        lista->inicio = atual->proximo; 
+    } else {
+        // Remove de qualquer lugar da lista
+        anterior->proximo = atual->proximo;
+    }
+
+    lista->qtd--;  
+    // Libera a memória
+    free(atual->dados->entrada);
+    free(atual->dados);
+    free(atual);
+
+    printf("Paciente removido com sucesso!\n");
+}
+
+void enfileirar_paciente(Fila *fila, Lista *lista) {
+    char rg[20];
+    printf("Digite o RG do paciente que deseja enfileirar: ");
+    scanf("%s", rg);
+    clearBuffer();
+    
+    // Busca o paciente na lista
+    ELista *atual = lista->inicio;
+    Registro *registro = NULL;
+    while (atual != NULL && strcmp(atual->dados->rg, rg) != 0) {
+        atual = atual->proximo;
+    }
+    
+
+    if (atual != NULL) {
+        registro = atual->dados;  // Paciente encontrado
+    } else {
+        printf("Paciente não encontrado!\n");
+        return;
+    }
+    
+    Efila *novo = malloc(sizeof(Efila));
+    if (novo == NULL) {
+        printf("Erro ao alocar memória!\n");
+        return;
+    }
+
+    novo->dados = registro;
+    novo->proximo = NULL;
+
+    // Enfileirar o paciente
+    if (fila->qtd == 0) {
+        fila->head = novo;
+        fila->tail = novo;
+    } else {
+        fila->tail->proximo = novo;
+        fila->tail = novo;
+    }
+
+    fila->qtd++;
+    printf("\nO paciente foi enfileirado!\n");
+}
+
+
+void desenfileirar_paciente(Fila *fila) {
+    if (fila->qtd == 0) {
+        printf("\nNão há paciente para desenfileirar!");
+        return; 
+    }
+
+    // O paciente a ser removido é o primeiro da fila
+    Efila *remover = fila->head;
+    fila->head = fila->head->proximo; 
+
+    // Se a fila agora estiver vazia, atualiza o tail 
+    if (fila->head == NULL) {
+        fila->tail = NULL;
+    }
+    
+    printf("\nPaciente removido da fila: %s\n", remover->dados->nome);
+    free(remover->dados->entrada); 
+    free(remover->dados); 
+    free(remover); 
+    fila->qtd--; 
+}
+
+
+void mostrar_fila(Fila *fila){
+    if (fila->qtd == 0) {
+        printf("A fila está vazia.\n");
+        return;
+    }
+
+    Efila *atual = fila->head;
+    printf("Pacientes na fila:\n");
+
+    while (atual != NULL) {
+        printf("\nNome: %s", atual->dados->nome);
+        printf("\nIdade: %d", atual->dados->idade);
+        printf("\nRG: %s", atual->dados->rg);
+        printf("\nData de entrada: %d/%d/%d\n", 
+            atual->dados->entrada->dia, 
+            atual->dados->entrada->mes, 
+            atual->dados->entrada->ano);
+        
+        atual = atual->proximo; 
+    }
+}
+
 
 // funções auxiliares
 void clearBuffer(){ 
