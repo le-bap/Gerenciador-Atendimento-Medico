@@ -403,6 +403,55 @@ int desfazer(Pilha *pilha, Fila *fila) {
     return 1;
 }
 
+//item 5: salvar e carregar na lista
+
+int salvar_lista(Lista *lista, const char *nome_arquivo) {
+    FILE *f = fopen(nome_arquivo, "wb"); 
+    if (f == NULL) {
+        printf("Erro ao abrir o arquivo para salvar.\n");
+        return 1;
+    }
+    
+    fwrite(&lista->qtd, sizeof(int), 1, f);
+    ELista *atual = lista->inicio;
+    while (atual != NULL) {
+        fwrite(atual->dados, sizeof(Registro), 1, f);         
+        fwrite(atual->dados->entrada, sizeof(Data), 1, f);      
+        atual = atual->proximo;
+    }
+
+    fclose(f);
+    printf("Lista salva com sucesso!\n");
+    return 0;
+}
+
+int carregar_lista(Lista *lista, const char *nome_arquivo) {
+    FILE *f = fopen(nome_arquivo, "rb"); 
+    if (f == NULL) {
+        printf("Arquivo não encontrado.\n");
+        return 1;
+    }
+    
+    fread(&lista->qtd, sizeof(int), 1, f);
+    lista->inicio = NULL;
+
+    for (int i = 0; i < lista->qtd; i++) {
+        Registro *registro = malloc(sizeof(Registro));
+        Data *data = malloc(sizeof(Data));
+
+        fread(registro, sizeof(Registro), 1, f);  
+        fread(data, sizeof(Data), 1, f);          
+        registro->entrada = data;
+        
+        ELista *novo = criar_elista(registro);
+        novo->proximo = lista->inicio;
+        lista->inicio = novo;
+    }
+
+    fclose(f);
+    printf("Lista carregada com sucesso!\n");
+    return 0;
+}
 
 // item 6 do menu
 void sobre(){

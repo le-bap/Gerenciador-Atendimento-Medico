@@ -11,6 +11,8 @@ int main(void) {
     Fila *fila = criar_fila();
     Pilha *pilha;
     inicializa_pilha(&pilha);
+
+    char nome_arquivo[] = "arquivo.bin";
     int op = 1;
     // menu
     while(op != 0){
@@ -88,6 +90,12 @@ int main(void) {
             printf("2 - Salvar um arquivo com os dados dos pacientes\n"); 
             scanf("%d", &op2); 
             clearBuffer();
+
+            if(op2 == 1){
+                carregar_lista(lista, nome_arquivo);
+            }else if(op2 == 2){
+                salvar_lista(lista, nome_arquivo);
+            }
         }
         else if(op == 6){
             sobre();
