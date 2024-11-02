@@ -10,6 +10,10 @@ int main(void) {
     Lista *lista = criar_lista();
     Fila *fila = criar_fila();
     Stack *stack = criar_stack();
+    ABB *abb_ano = criar_ABB();
+    ABB *abb_dia = criar_ABB();
+    ABB *abb_mes = criar_ABB();
+    ABB *abb_idade = criar_ABB();
 
     char nome_arquivo[] = "arquivo.bin";
     int op = 1;
@@ -78,6 +82,21 @@ int main(void) {
             printf("4 - Mostrar registros ordenados por idade do paciente\n");
             scanf("%d", &op2);
             clearBuffer();
+            if(op2 == 1){
+                in_ordem(abb_ano->raiz);
+            }
+            else if (op2 == 2){
+                in_ordem(abb_mes->raiz);
+            }
+            else if(op2 == 3){
+                in_ordem(abb_dia->raiz);
+            }
+            else if (op2 == 4){
+                in_ordem(abb_idade->raiz);
+            }
+            else{
+                printf("\nOpcao invalida!");
+            }
         }
 
         else if (op == 4){
@@ -91,7 +110,7 @@ int main(void) {
             clearBuffer();
 
             if(op2 == 1){
-                carregar_lista(lista, nome_arquivo);
+                carregar_lista(lista, nome_arquivo, abb_ano, abb_mes, abb_dia, abb_idade);
             }else if(op2 == 2){
                 salvar_lista(lista, nome_arquivo);
             }

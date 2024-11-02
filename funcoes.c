@@ -21,7 +21,6 @@ Registro *criar_registro(char *nome, int idade, char *rg, Data *entrada){
     return registro;
 }
 
-// funções de cadastrar
 ELista *criar_elista(Registro *registro){
     ELista *elista = malloc(sizeof(ELista));
     elista->dados = registro;
@@ -58,9 +57,24 @@ Stack *criar_stack(){
   return stack;
 }
 
+ABB *criar_ABB(){
+    ABB* arvore = malloc(sizeof(ABB));
+	arvore->raiz = NULL;
+	arvore->qtde = 0;
+	return arvore;
+}
+
+EABB *criar_EABB(Registro *registro){
+    EABB *novo = malloc(sizeof(EABB));
+    novo->dir = NULL;
+    novo->esq = NULL;
+    novo->dados = registro;
+    return novo;
+}
+
 //item 1 do menu
 // cadastrar novo paciente
-void cadastrar(Lista *lista) {
+void *cadastrar(Lista *lista) {
     char nome[50];
     int idade;
     char rg[20];
@@ -95,6 +109,8 @@ void cadastrar(Lista *lista) {
     novo_elemento->proximo = lista->inicio;
     lista->inicio = novo_elemento;
     lista->qtd++;
+    return novo_registro;
+
 }
 
 void mostrar_lista(Lista *lista){
@@ -235,7 +251,7 @@ void remover_paciente(Lista *lista){
     printf("Paciente removido com sucesso!\n");
 }
 
-//item 2 do menu
+//item 2: Atendimento - fila
 
 void enfileirar_paciente(Fila *fila, Lista *lista,  Stack *stack) {
     char rg[20];
@@ -334,7 +350,127 @@ void mostrar_fila(Fila *fila){
 }
 
 
-// fazer a arvore binaria
+// item 3: arvore binaria de busca
+void in_ordem(EABB *raiz) {
+    if (raiz == NULL){return;}
+    in_ordem(raiz->esq);
+    printf("\nNome: %s", raiz->dados->nome);
+    printf("\nIdade: %d", raiz->dados->idade);
+    printf("\nRG: %s", raiz->dados->rg);
+    printf("\nData de entrada:  %d/%d/%d\n", raiz->dados->entrada->dia,
+        raiz->dados->entrada->mes, raiz->dados->entrada->ano);
+    in_ordem(raiz->dir);
+}
+
+void inserir_EABB_ano(ABB *abb, Registro *registro){
+	EABB *novo = criar_EABB(registro);
+	
+    if (abb->qtde == 0){
+        abb->raiz = novo;
+    }
+    else{
+        EABB *atual = abb->raiz;
+        EABB *anterior = NULL;
+        while(atual != NULL){
+            anterior = atual;
+            if (registro->entrada->ano < atual->dados->entrada->ano){ // quando valor for menor q atual, vai pra esq
+                atual = atual->esq;
+            }
+            else { // se for maior, vai pra direita
+                atual = atual->dir;
+            }
+            
+        }
+        // insere no anterior
+        if (registro->entrada->ano > anterior->dados->entrada->ano){
+            anterior->dir = novo;
+        } else{
+            anterior->esq = novo;
+        }
+    }
+    abb->qtde++;
+} 
+void inserir_EABB_mes(ABB *abb, Registro *registro){
+	EABB *novo = criar_EABB(registro);
+    if (abb->qtde == 0){
+        abb->raiz = novo;
+    }
+    else{
+        EABB *atual = abb->raiz;
+        EABB *anterior = NULL;
+        while(atual != NULL){
+            anterior = atual;
+            if (registro->entrada->mes < atual->dados->entrada->mes){ // quando valor for menor q atual, vai pra esq
+                atual = atual->esq;
+            }
+            else { // se for maior, vai pra direita
+                atual = atual->dir;
+            }
+            
+        }
+        // insere no anterior
+        if (registro->entrada->mes > anterior->dados->entrada->mes){
+            anterior->dir = novo;
+        } else{
+            anterior->esq = novo;
+        }
+    }
+    abb->qtde++;
+} 
+void inserir_EABB_dia(ABB *abb, Registro *registro){
+	EABB *novo = criar_EABB(registro);
+    if (abb->qtde == 0){
+        abb->raiz = novo;
+    }
+    else{
+        EABB *atual = abb->raiz;
+        EABB *anterior = NULL;
+        while(atual != NULL){
+            anterior = atual;
+            if (registro->entrada->dia < atual->dados->entrada->dia){ // quando valor for menor q atual, vai pra esq
+                atual = atual->esq;
+            }
+            else { // se for maior, vai pra direita
+                atual = atual->dir;
+            }
+            
+        }
+        // insere no anterior
+        if (registro->entrada->dia > anterior->dados->entrada->dia){
+            anterior->dir = novo;
+        } else{
+            anterior->esq = novo;
+        }
+    }
+    abb->qtde++;
+} 
+void inserir_EABB_idade(ABB *abb, Registro *registro){
+	EABB *novo = criar_EABB(registro);
+    if (abb->qtde == 0){
+        abb->raiz = novo;
+    }
+    else{
+        EABB *atual = abb->raiz;
+        EABB *anterior = NULL;
+        while(atual != NULL){
+            anterior = atual;
+            if (registro->idade < atual->dados->idade){ // quando valor for menor q atual, vai pra esq
+                atual = atual->esq;
+            }
+            else { // se for maior, vai pra direita
+                atual = atual->dir;
+            }
+            
+        }
+        // insere no anterior
+        if (registro->idade > anterior->dados->idade){
+            anterior->dir = novo;
+        } else{
+            anterior->esq = novo;
+        }
+    }
+    abb->qtde++;
+} 
 
 //item 4: desfazer
 Celula *criar_celula(Operacao operacao){
@@ -348,7 +484,7 @@ Celula *criar_celula(Operacao operacao){
 void push(Stack *stack, Operacao operacao) {
     Celula *novo = malloc(sizeof(Celula));
     if (novo == NULL) {
-        printf("Erro ao alocar memória para a nova célula!\n");
+        printf("Erro ao alocar memoria para a nova celula!\n");
         return;
     }
     
@@ -385,17 +521,17 @@ Operacao pop(Stack *stack) {
 
 void desfazer(Stack *stack, Fila *fila) {
     if (stack->qtde == 0) {
-        printf("Nenhuma operação para desfazer!\n");
+        printf("Nenhuma operacao para desfazer!\n");
         return;
     }
 
     Operacao ultima_operacao = pop(stack);  
-    printf("Deseja desfazer a última operação realizada? (1 --> Sim, 0 --> Não): ");
+    printf("Deseja desfazer a ultima operação realizada? (1 --> Sim, 0 --> Nao): ");
     int confirmacao;
     scanf("%d", &confirmacao);
 
     if (confirmacao != 1) {
-        printf("Operação de desfazer cancelada.\n");
+        printf("Operacao de desfazer cancelada.\n");
         return;
     }
 
@@ -466,7 +602,7 @@ int salvar_lista(Lista *lista, const char *nome_arquivo) {
     return 0;
 }
 
-int carregar_lista(Lista *lista, const char *nome_arquivo) {
+int carregar_lista(Lista *lista, const char *nome_arquivo, ABB *abb_ano, ABB *abb_mes,  ABB *abb_dia, ABB *abb_idade) {
     FILE *f = fopen(nome_arquivo, "rb"); 
     if (f == NULL) {
         printf("Arquivo não encontrado.\n");
@@ -485,6 +621,10 @@ int carregar_lista(Lista *lista, const char *nome_arquivo) {
         registro->entrada = data;
         
         ELista *novo = criar_elista(registro);
+        inserir_EABB_ano(abb_ano, registro);
+        inserir_EABB_mes(abb_mes, registro);
+        inserir_EABB_dia(abb_dia, registro);
+        inserir_EABB_idade(abb_idade, registro);
         novo->proximo = lista->inicio;
         lista->inicio = novo;
     }

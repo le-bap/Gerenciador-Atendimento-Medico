@@ -1,16 +1,14 @@
 #ifndef ESTRUTURAS_H  
 #define ESTRUTURAS_H
 
-// Forward declaration da estrutura ELista e Efila
-typedef struct ELista ELista;
-typedef struct Efila Efila;
-
 typedef struct Data {
     int dia;
     int mes;
     int ano;
 } Data;
 
+typedef struct ELista ELista;
+typedef struct Efila Efila;
 typedef struct Registro {
     char nome[50];
     int idade;
@@ -18,10 +16,9 @@ typedef struct Registro {
     Data *entrada;
 } Registro;
 
-// Definição da estrutura ELista
 struct ELista {
     Registro *dados;
-    ELista *proximo; // Aqui o tipo ELista já é conhecido devido ao forward declaration
+    ELista *proximo; 
 };
 
 typedef struct Lista {
@@ -56,5 +53,15 @@ typedef struct Stack {
     int qtde;
 } Stack;
 
+typedef struct EABB{
+	Registro *dados;
+	struct EABB* esq;
+	struct EABB* dir;
+} EABB;
+
+typedef struct ABB{
+	EABB* raiz;
+	int qtde;
+} ABB;
 
 #endif
