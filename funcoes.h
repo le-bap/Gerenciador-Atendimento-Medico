@@ -24,5 +24,15 @@ void enfileirar_paciente(Fila *fila, Lista *lista);
 void desenfileirar_paciente(Fila *fila);
 void mostrar_fila(Fila *fila);
 
+//funcoes de desfazer
+void inicializa_pilha(Pilha *pilha);
+int vazia(Pilha *pilha);
+int push(Pilha *pilha, Operacao operacao);
+Operacao pop(Pilha *pilha);
+
+
+//item sobre:
+void sobre();
+
 void clearBuffer();
 #endif

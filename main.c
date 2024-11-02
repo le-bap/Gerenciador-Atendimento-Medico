@@ -9,6 +9,8 @@ int main(void) {
     
     Lista *lista = criar_lista();
     Fila *fila = criar_fila();
+    Pilha *pilha;
+    inicializa_pilha(&pilha);
     int op = 1;
     // menu
     while(op != 0){
@@ -78,7 +80,7 @@ int main(void) {
         }
 
         else if (op == 4){
-            // chamar a função desfazer
+            desfazer(pilha, fila);
         }
         
         else if (op == 5){
@@ -88,13 +90,7 @@ int main(void) {
             clearBuffer();
         }
         else if(op == 6){
-            // chamar a função sobre()
-            /*Nome do aluno;
-            ▶ Ciclo;
-            ▶ Curso;
-            ▶ Disciplina;
-            ▶ Data.
-            */
+            sobre();
         }
         else if (op == 0){
             break;

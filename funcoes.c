@@ -51,6 +51,7 @@ Fila *criar_fila(){
   return fila;
 }
 
+//item 1 do menu
 // cadastrar novo paciente
 void cadastrar(Lista *lista) {
     char nome[50];
@@ -227,6 +228,8 @@ void remover_paciente(Lista *lista){
     printf("Paciente removido com sucesso!\n");
 }
 
+//item 2 do menu
+
 void enfileirar_paciente(Fila *fila, Lista *lista) {
     char rg[20];
     printf("Digite o RG do paciente que deseja enfileirar: ");
@@ -314,6 +317,101 @@ void mostrar_fila(Fila *fila){
         
         atual = atual->proximo; 
     }
+}
+
+
+// fazer a arvore binaria
+
+//item 4: desfazer
+
+void inicializa_pilha(Pilha *pilha){
+  pilha->qtde = 0;
+  pilha->topo = 0;
+}
+
+int vazia(Pilha *pilha){
+  return pilha->qtde == 0;
+}
+
+int push(Pilha *pilha, Operacao operacao){ // funcao de empilhar
+    pilha->dados[pilha->topo++] = operacao;
+    pilha->qtde++;
+    return 1;
+}
+
+Operacao pop(Pilha *pilha){ // funcao de desempilhar
+  if(!vazia(pilha)){
+    pilha->qtde--;
+    return pilha->dados[--pilha->topo];
+  }
+  return;
+}
+
+
+int desfazer(Pilha *pilha, Fila *fila) {
+    if (vazia(pilha)) {
+        printf("Não há nenhuma operação para desfazer!\n");
+        return 0;
+    }
+
+    Operacao ultima = pop(pilha);
+
+    // logica de que se for tipo 1 -- a ultima operacao um paciente foi enfileirado
+    // se for 2 -- paciente desenfileirado
+    // utilizamos int pois é mais facil de manipular
+
+    if (ultima.operacao == 1) {
+        printf("Última operação: Enfileiramento do paciente %s\n", ultima.pessoa->nome);
+    } else if (ultima.operacao == 2) {
+        printf("Última operação: Desenfileiramento do paciente %s\n", ultima.pessoa->nome);
+    }
+
+    int confirma;
+    printf("Você confirma que quer desfazer essa operação (1-sim/2-nao):\n");
+    scanf("%d", &confirma);
+
+    if (confirma == 1) {
+        if (ultima.operacao == 1) {
+            desenfileirar_paciente(fila);
+            printf("Operação de enfileiramento foi desfeita.\n");
+        } else if (ultima.operacao == 2) {
+            // Reenfileira o paciente removido
+            Efila *novo = malloc(sizeof(Efila));
+            if (novo == NULL) {
+                printf("Erro ao alocar memória para o paciente!\n");
+                return 0;
+            }
+            novo->dados = ultima.pessoa;
+            novo->proximo = NULL;
+
+            // Adiciona o paciente ao final da fila
+            if (fila->qtd == 0) {
+                fila->head = novo;
+                fila->tail = novo;
+            } else {
+                fila->tail->proximo = novo;
+                fila->tail = novo;
+            }
+            fila->qtd++;
+            printf("Operação de desenfileiramento foi desfeita.\n");
+        }
+    } else {
+        // Reempilha a operação não desfeita
+        push(pilha, ultima);
+        printf("Operação não desfeita.\n");
+    }
+    return 1;
+}
+
+
+// item 6 do menu
+void sobre(){
+    printf("Aluna: Rafaela Altheman de Campos - R.A: 24.123.010-1\n");
+    printf("Aluna: Letizia Lowatzki Baptistella - R.A: 24.123.031-7\n");
+    printf("Ciclo: 4º Semestre\n");
+    printf("Curso: Ciência da Computação\n");
+    printf("Disciplina: Estrutura de dados (CC4652) Professor: Luciano Rossi\n");
+    printf("Data de entrega: 08/11/2024\n");
 }
 
 
