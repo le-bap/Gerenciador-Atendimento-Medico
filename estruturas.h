@@ -40,17 +40,21 @@ struct Efila{
     Efila *proximo;
 };
 
-typedef struct{
-    int operacao; //1 - enfileirado / 2 - desenfileirado 
-    Registro *pessoa;
+typedef struct {
+    int tipo_operacao;      
+    Registro *registro;     
 } Operacao;
 
-typedef struct {
-  Operacao dados[100];
-  int topo;
-  int qtde;
-} Pilha;
+typedef struct Celula {
+    Operacao operacao;         
+    struct Celula *anterior;
+    struct Celula *proximo;
+} Celula;
 
+typedef struct Stack {
+    Celula *topo;
+    int qtde;
+} Stack;
 
 
 #endif

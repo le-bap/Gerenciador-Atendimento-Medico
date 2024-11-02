@@ -20,16 +20,19 @@ void atualizar_dados(Lista *lista);
 void remover_paciente(Lista *lista);
 
 // Item: Atendimento 
-void enfileirar_paciente(Fila *fila, Lista *lista);
-void desenfileirar_paciente(Fila *fila);
+void enfileirar_paciente(Fila *fila, Lista *lista,  Stack *stack);
+void desenfileirar_paciente(Fila *fila,  Stack *stack);
 void mostrar_fila(Fila *fila);
 
 //funcoes de desfazer
-void inicializa_pilha(Pilha *pilha);
-int vazia(Pilha *pilha);
-int push(Pilha *pilha, Operacao operacao);
-Operacao pop(Pilha *pilha);
+Celula *criar_celula(Operacao operacao);
+Stack *criar_stack();
+void push(Stack *stack, Operacao operacao);
+Operacao pop(Stack *pilha);
+void desfazer(Stack *stack, Fila *fila);
 
+int salvar_lista(Lista *lista, const char *nome_arquivo);
+int carregar_lista(Lista *lista, const char *nome_arquivo);
 
 //item sobre:
 void sobre();

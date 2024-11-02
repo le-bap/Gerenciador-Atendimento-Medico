@@ -9,8 +9,7 @@ int main(void) {
     
     Lista *lista = criar_lista();
     Fila *fila = criar_fila();
-    Pilha *pilha;
-    inicializa_pilha(&pilha);
+    Stack *stack = criar_stack();
 
     char nome_arquivo[] = "arquivo.bin";
     int op = 1;
@@ -62,9 +61,9 @@ int main(void) {
             scanf("%d", &op2);
             clearBuffer();  
             if(op2 == 1){
-                enfileirar_paciente(fila, lista);
+                enfileirar_paciente(fila, lista,stack);
             }else if(op2 == 2){
-                desenfileirar_paciente(fila);
+                desenfileirar_paciente(fila,stack);
             }else if(op2 == 3){
                 mostrar_fila(fila);
             }else{
@@ -82,7 +81,7 @@ int main(void) {
         }
 
         else if (op == 4){
-            desfazer(pilha, fila);
+            desfazer(stack, fila);
         }
         
         else if (op == 5){

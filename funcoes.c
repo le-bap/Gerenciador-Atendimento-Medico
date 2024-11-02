@@ -51,6 +51,13 @@ Fila *criar_fila(){
   return fila;
 }
 
+Stack *criar_stack(){
+  Stack *stack = malloc(sizeof(Stack));
+  stack->qtde = 0;
+  stack->topo = NULL;
+  return stack;
+}
+
 //item 1 do menu
 // cadastrar novo paciente
 void cadastrar(Lista *lista) {
@@ -230,7 +237,7 @@ void remover_paciente(Lista *lista){
 
 //item 2 do menu
 
-void enfileirar_paciente(Fila *fila, Lista *lista) {
+void enfileirar_paciente(Fila *fila, Lista *lista,  Stack *stack) {
     char rg[20];
     printf("Digite o RG do paciente que deseja enfileirar: ");
     scanf("%s", rg);
@@ -271,10 +278,13 @@ void enfileirar_paciente(Fila *fila, Lista *lista) {
 
     fila->qtd++;
     printf("\nO paciente foi enfileirado!\n");
+
+    Operacao nova_operacao = {1, registro};
+    push(stack, nova_operacao);
 }
 
 
-void desenfileirar_paciente(Fila *fila) {
+void desenfileirar_paciente(Fila *fila,  Stack *stack) {
     if (fila->qtd == 0) {
         printf("\nNão há paciente para desenfileirar!");
         return; 
@@ -290,6 +300,10 @@ void desenfileirar_paciente(Fila *fila) {
     }
     
     printf("\nPaciente removido da fila: %s\n", remover->dados->nome);
+
+    Operacao nova_operacao = {2, remover->dados};
+    push(stack, nova_operacao);
+
     free(remover->dados->entrada); 
     free(remover->dados); 
     free(remover); 
@@ -323,85 +337,112 @@ void mostrar_fila(Fila *fila){
 // fazer a arvore binaria
 
 //item 4: desfazer
-
-void inicializa_pilha(Pilha *pilha){
-  pilha->qtde = 0;
-  pilha->topo = 0;
+Celula *criar_celula(Operacao operacao){
+  Celula *celula = malloc(sizeof(Celula));
+  celula->anterior = NULL;
+  celula->proximo = NULL;
+  celula->operacao = operacao;
+  return celula;
 }
 
-int vazia(Pilha *pilha){
-  return pilha->qtde == 0;
+void push(Stack *stack, Operacao operacao) {
+    Celula *novo = malloc(sizeof(Celula));
+    if (novo == NULL) {
+        printf("Erro ao alocar memória para a nova célula!\n");
+        return;
+    }
+    
+    novo->operacao = operacao; 
+    novo->anterior = stack->topo;
+    novo->proximo = NULL;
+    
+    if (stack->qtde > 0) {
+        stack->topo->proximo = novo;
+    }
+    
+    stack->topo = novo;
+    stack->qtde++;
 }
 
-int push(Pilha *pilha, Operacao operacao){ // funcao de empilhar
-    pilha->dados[pilha->topo++] = operacao;
-    pilha->qtde++;
-    return 1;
-}
-
-Operacao pop(Pilha *pilha){ // funcao de desempilhar
-  if(!vazia(pilha)){
-    pilha->qtde--;
-    return pilha->dados[--pilha->topo];
-  }
-  return;
-}
-
-
-int desfazer(Pilha *pilha, Fila *fila) {
-    if (vazia(pilha)) {
-        printf("Não há nenhuma operação para desfazer!\n");
-        return 0;
+Operacao pop(Stack *stack) {
+    Operacao operacao_vazia = {0, NULL}; 
+    if (stack->qtde == 0) {
+        return operacao_vazia;
     }
 
-    Operacao ultima = pop(pilha);
-
-    // logica de que se for tipo 1 -- a ultima operacao um paciente foi enfileirado
-    // se for 2 -- paciente desenfileirado
-    // utilizamos int pois é mais facil de manipular
-
-    if (ultima.operacao == 1) {
-        printf("Última operação: Enfileiramento do paciente %s\n", ultima.pessoa->nome);
-    } else if (ultima.operacao == 2) {
-        printf("Última operação: Desenfileiramento do paciente %s\n", ultima.pessoa->nome);
+    Operacao operacao = stack->topo->operacao;
+    Celula *temp = stack->topo;
+    stack->topo = stack->topo->anterior;
+    if (stack->qtde > 1) {
+        stack->topo->proximo = NULL;
     }
 
-    int confirma;
-    printf("Você confirma que quer desfazer essa operação (1-sim/2-nao):\n");
-    scanf("%d", &confirma);
+    free(temp);
+    stack->qtde--;
+    return operacao;
+}
 
-    if (confirma == 1) {
-        if (ultima.operacao == 1) {
-            desenfileirar_paciente(fila);
-            printf("Operação de enfileiramento foi desfeita.\n");
-        } else if (ultima.operacao == 2) {
-            // Reenfileira o paciente removido
-            Efila *novo = malloc(sizeof(Efila));
-            if (novo == NULL) {
-                printf("Erro ao alocar memória para o paciente!\n");
-                return 0;
-            }
-            novo->dados = ultima.pessoa;
-            novo->proximo = NULL;
 
-            // Adiciona o paciente ao final da fila
-            if (fila->qtd == 0) {
-                fila->head = novo;
-                fila->tail = novo;
-            } else {
-                fila->tail->proximo = novo;
-                fila->tail = novo;
-            }
-            fila->qtd++;
-            printf("Operação de desenfileiramento foi desfeita.\n");
+void desfazer(Stack *stack, Fila *fila) {
+    if (stack->qtde == 0) {
+        printf("Nenhuma operação para desfazer!\n");
+        return;
+    }
+
+    Operacao ultima_operacao = pop(stack);  
+    printf("Deseja desfazer a última operação realizada? (1 --> Sim, 0 --> Não): ");
+    int confirmacao;
+    scanf("%d", &confirmacao);
+
+    if (confirmacao != 1) {
+        printf("Operação de desfazer cancelada.\n");
+        return;
+    }
+
+    pop(stack);  
+
+    if (ultima_operacao.tipo_operacao == 1) {
+        // desfazer um enfileiramento
+        Efila *atual = fila->head, *anterior = NULL;
+        while (atual != NULL && atual->dados != ultima_operacao.registro) {
+            anterior = atual;
+            atual = atual->proximo;
         }
-    } else {
-        // Reempilha a operação não desfeita
-        push(pilha, ultima);
-        printf("Operação não desfeita.\n");
+        if (atual == NULL){
+            return;
+        }
+
+        // Remove o paciente da fila
+        if (anterior == NULL) {
+            fila->head = atual->proximo;
+        }else {
+            anterior->proximo = atual->proximo;
+            if (fila->tail == atual) {
+                fila->tail = anterior;
+            }
+        }
+
+        free(atual);
+        fila->qtd--;
+
+        printf("Operacao desfeita.\n");
     }
-    return 1;
+    else if (ultima_operacao.tipo_operacao == 2) {
+        // Desfazer um desenfileiramento
+        Efila *novo = criar_efila(ultima_operacao.registro);
+        if (fila->qtd == 0) {
+            fila->head = novo;
+            fila->tail = novo;
+        } else {
+            fila->tail->proximo = novo;
+            fila->tail = novo;
+        }
+        fila->qtd++;
+
+        printf("Operacao desfeita.\n");
+    }
 }
+
 
 //item 5: salvar e carregar na lista
 
