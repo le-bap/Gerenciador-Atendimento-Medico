@@ -74,7 +74,7 @@ EABB *criar_EABB(Registro *registro){
 
 //item 1 do menu
 // cadastrar novo paciente
-void *cadastrar(Lista *lista) {
+void *cadastrar(Lista *lista, ABB *abb_ano, ABB *abb_mes, ABB *abb_dia, ABB *abb_idade) {
     char nome[50];
     int idade;
     char rg[20];
@@ -109,7 +109,11 @@ void *cadastrar(Lista *lista) {
     novo_elemento->proximo = lista->inicio;
     lista->inicio = novo_elemento;
     lista->qtd++;
-    return novo_registro;
+
+    inserir_EABB_ano(abb_ano, novo_registro);
+    inserir_EABB_mes(abb_mes, novo_registro);
+    inserir_EABB_dia(abb_dia, novo_registro);
+    inserir_EABB_idade(abb_idade, novo_registro);
 
 }
 
@@ -638,8 +642,8 @@ int carregar_lista(Lista *lista, const char *nome_arquivo, ABB *abb_ano, ABB *ab
 void sobre(){
     printf("Aluna: Rafaela Altheman de Campos - R.A: 24.123.010-1\n");
     printf("Aluna: Letizia Lowatzki Baptistella - R.A: 24.123.031-7\n");
-    printf("Ciclo: 4º Semestre\n");
-    printf("Curso: Ciência da Computação\n");
+    printf("Ciclo: 4o Semestre\n");
+    printf("Curso: Ciencia da Computacao\n");
     printf("Disciplina: Estrutura de dados (CC4652) Professor: Luciano Rossi\n");
     printf("Data de entrega: 08/11/2024\n");
 }

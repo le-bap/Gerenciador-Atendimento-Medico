@@ -13,7 +13,7 @@ Lista *criar_lista();
 Fila *criar_fila();
 
 // Item: Cadastrar
-void *cadastrar(Lista *lista);
+void *cadastrar(Lista *lista,  ABB *ano, ABB *mes, ABB *dia, ABB *idade);
 void consultar_paciente(Lista *lista);
 void mostrar_lista(Lista *lista);
 void atualizar_dados(Lista *lista);

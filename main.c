@@ -41,7 +41,7 @@ int main(void) {
             clearBuffer();
 
             if (op2 == 1){
-                cadastrar(lista);
+                cadastrar(lista, abb_ano, abb_mes, abb_dia, abb_idade);
             }
             else if (op2 == 2){
                 consultar_paciente(lista);
@@ -54,7 +54,7 @@ int main(void) {
             }else if(op2 == 5){
                 remover_paciente(lista);
             }else{
-                printf("Opção Inválida!");
+                printf("Opcao Invalida!");
             }
         }
 
@@ -113,6 +113,8 @@ int main(void) {
                 carregar_lista(lista, nome_arquivo, abb_ano, abb_mes, abb_dia, abb_idade);
             }else if(op2 == 2){
                 salvar_lista(lista, nome_arquivo);
+            } else{
+                printf("Opcao invalida");
             }
         }
         else if(op == 6){
