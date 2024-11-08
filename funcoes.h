@@ -17,7 +17,7 @@ void *cadastrar(Lista *lista,  ABB *ano, ABB *mes, ABB *dia, ABB *idade);
 void consultar_paciente(Lista *lista);
 void mostrar_lista(Lista *lista);
 void atualizar_dados(Lista *lista);
-void remover_paciente(Lista *lista);
+void remover_paciente(Lista *lista, ABB *abb_ano, ABB *abb_mes, ABB *abb_dia, ABB *abb_idade);
 
 // Item: Atendimento 
 void enfileirar_paciente(Fila *fila, Lista *lista,  Stack *stack);
@@ -40,6 +40,7 @@ void inserir_EABB_dia(ABB *abb, Registro *registro);
 void inserir_EABB_idade(ABB *abb, Registro *registro);
 void remover_EABB(EABB *eabb);
 void in_ordem(EABB *raiz);
+void remover_no(ABB *abb, Registro *registro); 
 
 // Item: carregar/salvar
 int salvar_lista(Lista *lista, const char *nome_arquivo);

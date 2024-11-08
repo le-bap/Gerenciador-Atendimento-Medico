@@ -52,7 +52,7 @@ int main(void) {
             else if (op2 == 4){
                 atualizar_dados(lista);
             }else if(op2 == 5){
-                remover_paciente(lista);
+                remover_paciente(lista, abb_ano, abb_mes, abb_dia, abb_idade);
             }else{
                 printf("Opcao Invalida!");
             }

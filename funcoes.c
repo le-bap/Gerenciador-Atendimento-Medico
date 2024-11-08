@@ -4,6 +4,7 @@
 #include "funcoes.h"
 #include "estruturas.h"
 
+// funcao para criar a data
 Data *criar_data(int dia, int mes, int ano){
     Data *data = malloc(sizeof(Data));
     data->dia = dia;
@@ -12,6 +13,7 @@ Data *criar_data(int dia, int mes, int ano){
     return data;
 }
 
+// funcao para a criacao do registro, com todas as informações de nome, idade, tg e a data
 Registro *criar_registro(char *nome, int idade, char *rg, Data *entrada){
     Registro *registro = malloc(sizeof(Registro));
     strcpy(registro->nome, nome);
@@ -21,6 +23,7 @@ Registro *criar_registro(char *nome, int idade, char *rg, Data *entrada){
     return registro;
 }
 
+// funcao para criar a elista
 ELista *criar_elista(Registro *registro){
     ELista *elista = malloc(sizeof(ELista));
     elista->dados = registro;
@@ -28,6 +31,7 @@ ELista *criar_elista(Registro *registro){
     return elista;
 }
 
+// funcao para criar a efila
 Efila *criar_efila(Registro *registro){
     Efila *efila = malloc(sizeof(Efila));
     efila->dados = registro;
@@ -35,6 +39,7 @@ Efila *criar_efila(Registro *registro){
     return efila;
 }
 
+// funcao para criar a lista
 Lista *criar_lista(){
     Lista *lista = malloc(sizeof(Lista));
     lista->inicio = NULL;
@@ -42,14 +47,16 @@ Lista *criar_lista(){
     return lista;
 }
 
+// funcao para inicializar a fila
 Fila *criar_fila(){
   Fila *fila = malloc(sizeof(Fila));
-  fila->head = NULL;
-  fila->tail = NULL;
+  fila->head = NULL; // valores iniciam como null para a fila 
+  fila->tail = NULL; // o head e tail iniciam como NULL
   fila->qtd = 0;
   return fila;
 }
 
+// funcao para inicializar a pilha
 Stack *criar_stack(){
   Stack *stack = malloc(sizeof(Stack));
   stack->qtde = 0;
@@ -57,6 +64,7 @@ Stack *criar_stack(){
   return stack;
 }
 
+// funcao para inicializar a arvore 
 ABB *criar_ABB(){
     ABB* arvore = malloc(sizeof(ABB));
 	arvore->raiz = NULL;
@@ -64,6 +72,7 @@ ABB *criar_ABB(){
 	return arvore;
 }
 
+// funcao para criar a  EABB
 EABB *criar_EABB(Registro *registro){
     EABB *novo = malloc(sizeof(EABB));
     novo->dir = NULL;
@@ -110,6 +119,7 @@ void *cadastrar(Lista *lista, ABB *abb_ano, ABB *abb_mes, ABB *abb_dia, ABB *abb
     lista->inicio = novo_elemento;
     lista->qtd++;
 
+    // insere o paciente nas arvores
     inserir_EABB_ano(abb_ano, novo_registro);
     inserir_EABB_mes(abb_mes, novo_registro);
     inserir_EABB_dia(abb_dia, novo_registro);
@@ -117,6 +127,7 @@ void *cadastrar(Lista *lista, ABB *abb_ano, ABB *abb_mes, ABB *abb_dia, ABB *abb
 
 }
 
+// funcao para mostrar a lista de pacientes
 void mostrar_lista(Lista *lista){
     ELista *atual = lista->inicio;
     while (atual != NULL){
@@ -130,20 +141,21 @@ void mostrar_lista(Lista *lista){
     printf("\n");
 }
 
+// funcao para consultar algum paciente pelo rg
 void consultar_paciente(Lista *lista){
     ELista *atual = lista->inicio;
     char procurado[20];
     printf("Digite o RG do paciente: ");
     scanf("%s", procurado);
 
-    while(atual != NULL && strcmp(procurado, atual->dados->rg) != 0){
+    while(atual != NULL && strcmp(procurado, atual->dados->rg) != 0){ // percorremos a lista 
         atual = atual->proximo;
     }
     // atual vai guardar as informações do paciente buscado
     if (atual == NULL){
         printf("Paciente nao encontrado");
     }
-    else {
+    else { // mostra o paciente
         printf("\nNome: %s ", atual->dados->nome);
         printf("\nIdade: %d ", atual->dados->idade);
         printf("\nRG: %s ", atual->dados->rg);
@@ -152,20 +164,21 @@ void consultar_paciente(Lista *lista){
     }
 }
 
+// funcao para atualizar dados de um paciente
 void atualizar_dados(Lista *lista){
     ELista *atual = lista->inicio;
     char procurado[20];
     printf("Digite o RG do paciente: ");
     scanf("%s", procurado);
 
-    while(atual != NULL && strcmp(procurado, atual->dados->rg) != 0){
+    while(atual != NULL && strcmp(procurado, atual->dados->rg) != 0){ //percorremos a lista
         atual = atual->proximo;
     }
     // atual vai guardar as informações do paciente buscado
     if (atual == NULL){
         printf("\nPaciente nao encontrado");
     }else{
-        int escolha;
+        int escolha; // o usuario escolhe a informacao que deseja modificar
         printf("\nEscolha a inforamacao que gostaria de atualizar:");
         printf("\n1 - Nome");
         printf("\n2 - Idade");
@@ -214,7 +227,7 @@ void atualizar_dados(Lista *lista){
 }
 
 // funcao de remover paciente pelo RG
-void remover_paciente(Lista *lista){
+void remover_paciente(Lista *lista, ABB *abb_ano, ABB *abb_mes, ABB *abb_dia, ABB *abb_idade){
     if (lista->inicio == NULL) {
         printf("A lista está vazia. Não há pacientes para remover.\n");
         return;
@@ -227,7 +240,7 @@ void remover_paciente(Lista *lista){
     ELista *atual = lista->inicio;
     ELista *anterior = NULL;
 
-    while (atual != NULL && strcmp(removido, atual->dados->rg) != 0) {
+    while (atual != NULL && strcmp(removido, atual->dados->rg) != 0) { // percorremos a lista
         anterior = atual;  
         atual = atual->proximo;
     }
@@ -248,8 +261,14 @@ void remover_paciente(Lista *lista){
 
     lista->qtd--;  
     // Libera a memória
-    free(atual->dados->entrada);
-    free(atual->dados);
+    //free(atual->dados->entrada);
+    //free(atual->dados);
+
+    remover_no(abb_ano, atual->dados);
+    remover_no(abb_mes, atual->dados);
+    remover_no(abb_dia, atual->dados);
+    remover_no(abb_idade, atual->dados);
+
     free(atual);
 
     printf("Paciente removido com sucesso!\n");
@@ -257,37 +276,35 @@ void remover_paciente(Lista *lista){
 
 //item 2: Atendimento - fila
 
-void enfileirar_paciente(Fila *fila, Lista *lista,  Stack *stack) {
+// Função para enfileirar um paciente
+void enfileirar_paciente(Fila *fila, Lista *lista, Stack *stack) {
     char rg[20];
     printf("Digite o RG do paciente que deseja enfileirar: ");
     scanf("%s", rg);
     clearBuffer();
     
-    // Busca o paciente na lista
     ELista *atual = lista->inicio;
     Registro *registro = NULL;
     while (atual != NULL && strcmp(atual->dados->rg, rg) != 0) {
         atual = atual->proximo;
     }
     
-
     if (atual != NULL) {
         registro = atual->dados;  // Paciente encontrado
     } else {
         printf("Paciente não encontrado!\n");
         return;
     }
-    
+
     Efila *novo = malloc(sizeof(Efila));
     if (novo == NULL) {
         printf("Erro ao alocar memória!\n");
         return;
     }
-
     novo->dados = registro;
     novo->proximo = NULL;
 
-    // Enfileirar o paciente
+    // Enfileira o paciente
     if (fila->qtd == 0) {
         fila->head = novo;
         fila->tail = novo;
@@ -295,42 +312,37 @@ void enfileirar_paciente(Fila *fila, Lista *lista,  Stack *stack) {
         fila->tail->proximo = novo;
         fila->tail = novo;
     }
-
     fila->qtd++;
     printf("\nO paciente foi enfileirado!\n");
 
-    Operacao nova_operacao = {1, registro};
+    Operacao nova_operacao = {1, registro}; // Cria a operação para desfazer
     push(stack, nova_operacao);
 }
 
-
-void desenfileirar_paciente(Fila *fila,  Stack *stack) {
+// Função para desenfileirar um paciente
+void desenfileirar_paciente(Fila *fila, Stack *stack) {
     if (fila->qtd == 0) {
         printf("\nNão há paciente para desenfileirar!");
         return; 
     }
 
-    // O paciente a ser removido é o primeiro da fila
     Efila *remover = fila->head;
-    fila->head = fila->head->proximo; 
+    fila->head = fila->head->proximo;
 
-    // Se a fila agora estiver vazia, atualiza o tail 
     if (fila->head == NULL) {
         fila->tail = NULL;
     }
-    
+
     printf("\nPaciente removido da fila: %s\n", remover->dados->nome);
 
-    Operacao nova_operacao = {2, remover->dados};
+    Operacao nova_operacao = {2, remover->dados}; // Cria a operação para desfazer
     push(stack, nova_operacao);
 
-    free(remover->dados->entrada); 
-    free(remover->dados); 
-    free(remover); 
-    fila->qtd--; 
+    free(remover); // Libera apenas o nó, não o registro
+    fila->qtd--;
 }
 
-
+// funcao de mostrar fila
 void mostrar_fila(Fila *fila){
     if (fila->qtd == 0) {
         printf("A fila está vazia.\n");
@@ -340,7 +352,7 @@ void mostrar_fila(Fila *fila){
     Efila *atual = fila->head;
     printf("Pacientes na fila:\n");
 
-    while (atual != NULL) {
+    while (atual != NULL) { // percorre a fila e mostra os pacientes enfileirados
         printf("\nNome: %s", atual->dados->nome);
         printf("\nIdade: %d", atual->dados->idade);
         printf("\nRG: %s", atual->dados->rg);
@@ -366,6 +378,7 @@ void in_ordem(EABB *raiz) {
     in_ordem(raiz->dir);
 }
 
+// funcao para a arvore por ano
 void inserir_EABB_ano(ABB *abb, Registro *registro){
 	EABB *novo = criar_EABB(registro);
 	
@@ -394,6 +407,8 @@ void inserir_EABB_ano(ABB *abb, Registro *registro){
     }
     abb->qtde++;
 } 
+
+// funcao de arvore por mes
 void inserir_EABB_mes(ABB *abb, Registro *registro){
 	EABB *novo = criar_EABB(registro);
     if (abb->qtde == 0){
@@ -421,6 +436,8 @@ void inserir_EABB_mes(ABB *abb, Registro *registro){
     }
     abb->qtde++;
 } 
+
+// funcao de arvore ´pelo dia
 void inserir_EABB_dia(ABB *abb, Registro *registro){
 	EABB *novo = criar_EABB(registro);
     if (abb->qtde == 0){
@@ -448,6 +465,8 @@ void inserir_EABB_dia(ABB *abb, Registro *registro){
     }
     abb->qtde++;
 } 
+
+// funcao de arvore pela idade
 void inserir_EABB_idade(ABB *abb, Registro *registro){
 	EABB *novo = criar_EABB(registro);
     if (abb->qtde == 0){
@@ -485,13 +504,110 @@ Celula *criar_celula(Operacao operacao){
   return celula;
 }
 
+void remover_no(ABB *abb, Registro *registro) {
+    EABB *vertice = abb->raiz;
+    EABB *anterior = NULL;
+
+    // Buscar o nó que contém os dados do 'registro' na árvore
+    while (vertice != NULL) {
+        // Comparar os registros para encontrar o nó correspondente
+        if (registro->idade < vertice->dados->idade) {
+            anterior = vertice;
+            vertice = vertice->esq;
+        } else if (registro->idade > vertice->dados->idade) {
+            anterior = vertice;
+            vertice = vertice->dir;
+        } else {
+            // Encontrou o nó correspondente, então sai do loop
+            break;
+        }
+    }
+
+    // Se o nó não for encontrado
+    if (vertice == NULL) {
+        printf("Registro não encontrado.\n");
+        return;
+    }
+
+    // Agora que temos o nó a ser removido, vamos proceder com a remoção
+    int num_filhos = 0;
+
+    if (vertice->esq != NULL) num_filhos++;
+    if (vertice->dir != NULL) num_filhos++;
+
+    // Caso o nó não tenha filhos (nó folha)
+    if (num_filhos == 0) {
+        if (vertice == abb->raiz) {
+            abb->raiz = NULL;  // Se for a raiz, a árvore fica vazia
+        } else {
+            // Se não for a raiz, remove o nó da árvore
+            if (anterior->esq == vertice) {
+                anterior->esq = NULL;
+            } else {
+                anterior->dir = NULL;
+            }
+        }
+    }
+    // Caso o nó tenha 1 filho
+    else if (num_filhos == 1) {
+        EABB *filho = (vertice->esq != NULL) ? vertice->esq : vertice->dir;
+        if (vertice == abb->raiz) {
+            abb->raiz = filho;  // Se for a raiz, o filho se torna a nova raiz
+        } else {
+            // Se não for a raiz, conecta o filho no lugar do nó removido
+            if (anterior->esq == vertice) {
+                anterior->esq = filho;
+            } else {
+                anterior->dir = filho;
+            }
+        }
+    }
+    // Caso o nó tenha 2 filhos
+    else {
+        // Encontrar o sucessor (o maior nó da subárvore esquerda)
+        EABB *sucessor = vertice->esq;
+        EABB *sucessor_pai = vertice;
+
+        // Percorrer até o maior nó da subárvore esquerda
+        while (sucessor->dir != NULL) {
+            sucessor_pai = sucessor;
+            sucessor = sucessor->dir;
+        }
+
+        // Copiar os dados do sucessor para o nó atual
+        vertice->dados = sucessor->dados;
+
+        // Se o sucessor não tem filho esquerdo, remove diretamente o sucessor
+        if (sucessor->esq != NULL) {
+            if (sucessor_pai->esq == sucessor) {
+                sucessor_pai->esq = sucessor->esq;
+            } else {
+                sucessor_pai->dir = sucessor->esq;
+            }
+        } else {
+            if (sucessor_pai->esq == sucessor) {
+                sucessor_pai->esq = NULL;
+            } else {
+                sucessor_pai->dir = NULL;
+            }
+        }
+
+        free(sucessor); // Libera o nó sucessor
+    }
+
+    abb->qtde--;  // Atualiza a quantidade de nós na árvore
+    free(vertice); // Libera a memória do nó removido
+}
+
+
+// funcao de adicionar na pilha
 void push(Stack *stack, Operacao operacao) {
     Celula *novo = malloc(sizeof(Celula));
     if (novo == NULL) {
         printf("Erro ao alocar memoria para a nova celula!\n");
         return;
     }
-    
+    // define a operacao que vai ser desfeita
     novo->operacao = operacao; 
     novo->anterior = stack->topo;
     novo->proximo = NULL;
@@ -503,13 +619,14 @@ void push(Stack *stack, Operacao operacao) {
     stack->topo = novo;
     stack->qtde++;
 }
-
+// funcao para apagar da pilha
 Operacao pop(Stack *stack) {
     Operacao operacao_vazia = {0, NULL}; 
     if (stack->qtde == 0) {
         return operacao_vazia;
     }
 
+    // retorna a operacao desfeita
     Operacao operacao = stack->topo->operacao;
     Celula *temp = stack->topo;
     stack->topo = stack->topo->anterior;
@@ -522,14 +639,14 @@ Operacao pop(Stack *stack) {
     return operacao;
 }
 
-
+// funcao de desfazer
 void desfazer(Stack *stack, Fila *fila) {
     if (stack->qtde == 0) {
         printf("Nenhuma operacao para desfazer!\n");
         return;
     }
 
-    Operacao ultima_operacao = pop(stack);  
+    Operacao ultima_operacao = pop(stack);  // ve qual foi a ultima operacao e confirma com o usuario se ele dejesa desfazer
     printf("Deseja desfazer a ultima operação realizada? (1 --> Sim, 0 --> Nao): ");
     int confirmacao;
     scanf("%d", &confirmacao);
@@ -574,8 +691,10 @@ void desfazer(Stack *stack, Fila *fila) {
             fila->head = novo;
             fila->tail = novo;
         } else {
-            fila->tail->proximo = novo;
-            fila->tail = novo;
+            //fila->tail->proximo = novo;
+            //fila->tail = novo;
+            novo->proximo = fila->head;
+            fila->head = novo;
         }
         fila->qtd++;
 
