@@ -508,9 +508,9 @@ void remover_no(ABB *abb, Registro *registro) {
     EABB *vertice = abb->raiz;
     EABB *anterior = NULL;
 
-    // Buscar o nó que contém os dados do 'registro' na árvore
+    
     while (vertice != NULL) {
-        // Comparar os registros para encontrar o nó correspondente
+       
         if (registro->idade < vertice->dados->idade) {
             anterior = vertice;
             vertice = vertice->esq;
@@ -518,7 +518,6 @@ void remover_no(ABB *abb, Registro *registro) {
             anterior = vertice;
             vertice = vertice->dir;
         } else {
-            // Encontrou o nó correspondente, então sai do loop
             break;
         }
     }
@@ -529,13 +528,13 @@ void remover_no(ABB *abb, Registro *registro) {
         return;
     }
 
-    // Agora que temos o nó a ser removido, vamos proceder com a remoção
+    // Agora que temos o nó a ser removido
     int num_filhos = 0;
 
     if (vertice->esq != NULL) num_filhos++;
     if (vertice->dir != NULL) num_filhos++;
 
-    // Caso o nó não tenha filhos (nó folha)
+    // Caso o nó não tenha filhos
     if (num_filhos == 0) {
         if (vertice == abb->raiz) {
             abb->raiz = NULL;  // Se for a raiz, a árvore fica vazia
@@ -564,20 +563,15 @@ void remover_no(ABB *abb, Registro *registro) {
     }
     // Caso o nó tenha 2 filhos
     else {
-        // Encontrar o sucessor (o maior nó da subárvore esquerda)
         EABB *sucessor = vertice->esq;
         EABB *sucessor_pai = vertice;
-
-        // Percorrer até o maior nó da subárvore esquerda
         while (sucessor->dir != NULL) {
             sucessor_pai = sucessor;
             sucessor = sucessor->dir;
         }
 
-        // Copiar os dados do sucessor para o nó atual
         vertice->dados = sucessor->dados;
-
-        // Se o sucessor não tem filho esquerdo, remove diretamente o sucessor
+	    
         if (sucessor->esq != NULL) {
             if (sucessor_pai->esq == sucessor) {
                 sucessor_pai->esq = sucessor->esq;
@@ -592,11 +586,11 @@ void remover_no(ABB *abb, Registro *registro) {
             }
         }
 
-        free(sucessor); // Libera o nó sucessor
+        free(sucessor); 
     }
 
-    abb->qtde--;  // Atualiza a quantidade de nós na árvore
-    free(vertice); // Libera a memória do nó removido
+    abb->qtde--; 
+    free(vertice); 
 }
 
 
